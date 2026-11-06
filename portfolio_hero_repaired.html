@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sazonov — портфолио бизнес-аналитика</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#1B191A;color:#E9E4E0;font-family:'Manrope',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible{outline:2px solid #E9E4E0;outline-offset:3px}
+  ::selection{background:#943A1F;color:#E9E4E0}
+
+  /* ── Навигация ── */
+  .nav-pill{
+    display:flex;align-items:center;gap:6px;padding:5px;
+    background:rgba(27,25,26,0.92);
+    border:1px solid rgba(233,228,224,0.14);
+    border-radius:999px;
+    backdrop-filter:blur(8px);
+  }
+  .nav-ico{
+    display:flex;flex-direction:row-reverse;align-items:center;gap:0;
+    height:44px;padding:0 12px;border-radius:999px;
+    color:#E9E4E0;
+    transition:color .35s ease,background-color .35s ease,gap .5s cubic-bezier(.32,.72,0,1),padding .5s cubic-bezier(.32,.72,0,1);
+  }
+  .nav-ico svg{flex:none}
+  .nav-ico .lbl{
+    display:grid;grid-template-columns:0fr;opacity:0;
+    transition:grid-template-columns .5s cubic-bezier(.32,.72,0,1),opacity .25s ease;
+  }
+  .nav-ico .lbl>span{min-width:0;overflow:hidden;white-space:nowrap;font-size:15px;font-weight:600}
+  .nav-ico:hover,.nav-ico:focus-visible{
+    gap:10px;padding-left:20px;
+    color:#E9E4E0;background-color:rgba(148,58,31,0.30);
+  }
+  .nav-ico:hover .lbl,.nav-ico:focus-visible .lbl{
+    grid-template-columns:1fr;opacity:1;
+    transition:grid-template-columns .5s cubic-bezier(.32,.72,0,1),opacity .4s ease .1s;
+  }
+
+  /* ── Кнопки ── */
+  .roll{display:block;overflow:hidden;height:1.4em;line-height:1.4em}
+  .roll-in{display:block;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+  .roll-in>span{display:block;height:1.4em}
+  .hire{background:#943A1F;color:#E9E4E0;transition:background-color .5s ease,color .5s ease}
+  .hire:hover,.hire:focus-visible{background:#E9E4E0;color:#1B191A}
+  .hire:hover .roll-in,.hire:focus-visible .roll-in{transform:translateY(-50%)}
+  .btn-primary{background:#943A1F;color:#E9E4E0;transition:background-color .5s ease,color .5s ease}
+  .btn-primary:hover,.btn-primary:focus-visible{background:#E9E4E0;color:#1B191A}
+  .btn-primary:hover .roll-in,.btn-primary:focus-visible .roll-in{transform:translateY(-50%)}
+
+  /* ══════ БРЕНД + УВЕДОМЛЕНИЕ «+вайб» ══════ */
+  .brand{
+    position:relative;
+    display:inline-flex;align-items:center;
+    min-height:44px;font-size:24px;font-weight:800;letter-spacing:-0.04em;
+    cursor:pointer;
+  }
+  .brand .toast{
+    position:absolute;top:calc(100% + 6px);left:0;
+    padding:6px 12px;
+    background:#943A1F;color:#E9E4E0;
+    font-size:13px;font-weight:700;letter-spacing:.02em;
+    border-radius:999px;
+    white-space:nowrap;
+    pointer-events:none;
+    opacity:0;
+    transform:translateY(-6px) scale(.92);
+    transform-origin:top left;
+    transition:opacity .35s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1);
+    box-shadow:0 6px 16px rgba(27,25,26,.35);
+  }
+  .brand .toast::before{
+    content:"";position:absolute;top:-4px;left:14px;
+    width:8px;height:8px;
+    background:#943A1F;
+    transform:rotate(45deg);
+  }
+  .brand:hover .toast,.brand:focus-visible .toast{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+
+  /* ── Диск ── */
+  .disc{
+    position:absolute;left:0;bottom:12%;z-index:3;
+    display:block;width:132px;height:132px;
+    transition:transform .6s cubic-bezier(.16,1,.3,1);
+    cursor:pointer;
+  }
+  .disc:hover{transform:scale(1.07)}
+  .disc:active{transform:scale(1.02)}
+  .spin{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite;animation-play-state:paused}
+  .disc:hover .spin,.disc:focus-visible .spin,.disc.is-playing .spin{animation-play-state:running}
+
+  /* ══════ НОТЫ ══════ */
+  .notes{position:absolute;inset:0;pointer-events:none}
+  .notes span{
+    position:absolute;left:50%;top:50%;
+    font-family:'Manrope',sans-serif;font-weight:800;
+    color:#E9E4E0;font-size:22px;line-height:1;
+    opacity:0;transform:translate(-50%,-50%) scale(.3);
+    text-shadow:0 2px 8px rgba(27,25,26,.5);
+    will-change:transform,opacity;--dx:0;--dy:0;--dr:0;
+  }
+  .notes span:nth-child(1){--dx:-52px;--dy:-44px;--dr:-25deg;color:#E9E4E0}
+  .notes span:nth-child(2){--dx: 48px;--dy:-52px;--dr: 20deg;color:#F0B59E}
+  .notes span:nth-child(3){--dx:-58px;--dy: 12px;--dr:-15deg;color:#E9E4E0}
+  .notes span:nth-child(4){--dx: 56px;--dy:  6px;--dr: 30deg;color:#F0B59E}
+  .notes span:nth-child(5){--dx:-22px;--dy:-64px;--dr:  8deg;color:#E9E4E0}
+  .notes span:nth-child(6){--dx: 24px;--dy:-70px;--dr:-12deg;color:#F0B59E}
+
+  .disc.is-playing .notes span{animation:noteFly 1.3s cubic-bezier(.2,.7,.2,1) forwards}
+  .disc.is-playing .notes span:nth-child(1){animation-delay:.00s}
+  .disc.is-playing .notes span:nth-child(2){animation-delay:.06s}
+  .disc.is-playing .notes span:nth-child(3){animation-delay:.12s}
+  .disc.is-playing .notes span:nth-child(4){animation-delay:.18s}
+  .disc.is-playing .notes span:nth-child(5){animation-delay:.24s}
+  .disc.is-playing .notes span:nth-child(6){animation-delay:.30s}
+
+  @keyframes noteFly{
+    0%   {opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(0deg)}
+    20%  {opacity:1;transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.35)) scale(1.1) rotate(calc(var(--dr)*.5))}
+    70%  {opacity:1;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--dr))}
+    100% {opacity:0;transform:translate(calc(-50% + var(--dx)*1.25),calc(-50% + var(--dy)*1.25 - 18px)) scale(.85) rotate(calc(var(--dr)*1.6))}
+  }
+
+  /* ── Базовые анимации ── */
+  .strip-drift{animation:drift 6s ease-in-out infinite alternate;animation-play-state:paused}
+  .strip-drift:hover{animation-play-state:running}
+  
+  .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.06em .05em .16em 0;margin:-.06em -.05em -.16em 0}
+  .wi{display:inline-block;animation:wordUp 1s cubic-bezier(.16,1,.3,1) var(--d,0s) both}
+  .reveal{animation:rise 1s cubic-bezier(.16,1,.3,1) var(--d,0s) both}
+  
+  @keyframes wordUp{from{transform:translateY(105%) rotate(2deg);opacity:0}}
+  @keyframes rise{from{opacity:0;transform:translateY(22px);filter:blur(6px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes drift{from{transform:translateY(-12px)}to{transform:translateY(12px)}}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  @media (prefers-reduced-motion:reduce){
+    .spin,.strip-drift,.wi,.reveal{animation:none}
+    .roll-in,.disc,.nav-ico,.nav-ico .lbl,.hire,.btn-primary,.brand .toast{transition:none}
+    .disc.is-playing .notes span{animation:none;opacity:1}
+  }
+
+  /* ══════ HERO ══════ */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(55% 60% at 76% 48%, rgba(233,228,224,0.08), rgba(233,228,224,0) 70%);
+  }
+  .hero-header{
+    position:relative;z-index:3;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:12px 24px;padding:24px clamp(20px,5vw,72px);
+    max-width:1440px;margin:0 auto;width:100%;
+  }
+
+  .hero-main{
+    position:relative;z-index:1;flex:1;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 clamp(20px,5vw,72px);
+    margin-bottom: 24px;
+  }
+
+  .hero-layout{
+    width:100%;max-width:1440px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(420px,0.95fr);
+    align-items:center;
+    gap:clamp(32px,4vw,64px);
+    min-width:0;
+  }
+
+  /* ══════ ТЕКСТ ══════ */
+  .hero-copy{
+    min-width:0;
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+    gap:32px;padding:32px 0 48px;
+    max-width:560px;width:100%;
+  }
+
+  .chip{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 16px 8px 14px;
+    border:1px solid rgba(233,228,224,.22);
+    border-radius:999px;
+    font-size:14px;font-weight:600;
+    color:rgba(233,228,224,.85);
+  }
+  .chip i{
+    width:8px;height:8px;border-radius:50%;
+    background:#943A1F;box-shadow:0 0 0 3px rgba(148,58,31,.4);
+  }
+
+  .hero-title{
+    font-size:clamp(34px,3.6vw,56px);
+    font-weight:800;line-height:1.08;letter-spacing:-0.04em;
+    text-wrap:balance;
+    width:100%;max-width:100%;
+  }
+
+  /* ══════ «один Я» — последовательное появление и акцент ══════ */
+  .em-one{
+    position:relative;
+    display:inline-block;
+    font-family:'Manrope',system-ui,sans-serif;
+    font-style:normal;
+    font-weight:800;
+    font-size:1.06em;
+    letter-spacing:-.035em;
+    white-space:nowrap;
+    color:#F5C6A8;
+    padding:0 .06em;
+    
+    /* Запуск анимации выезда на 0.15s позже слова "запуска" */
+    animation: 
+      wordUp 1s cubic-bezier(.16,1,.3,1) calc(var(--d, 0s) + 0.15s) both,
+      accentGlow 1.2s cubic-bezier(.16,1,.3,1) calc(var(--d, 0s) + 0.15s) both;
+  }
+  
+  /* Анимация изменения цвета и появления свечения */
+  @keyframes accentGlow{
+    0%{
+      color:#E9E4E0; /* Сначала цвет как у остального текста */
+      text-shadow:0 0 0 rgba(148,58,31,0);
+    }
+    100%{
+      color:#F5C6A8;
+      text-shadow:
+        0 0 18px rgba(148,58,31,.55),
+        0 0 40px rgba(148,58,31,.25);
+    }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .em-one{
+      animation:none;
+      color:#F5C6A8;
+      text-shadow:0 0 18px rgba(148,58,31,.55),0 0 40px rgba(148,58,31,.25);
+    }
+  }
+
+  /* лид */
+  .hero-lead{
+    width:100%;max-width:100%;
+    font-size:17px;line-height:1.65;
+    color:rgba(233,228,224,.78);
+    text-wrap:pretty;
+    hyphens:none;-webkit-hyphens:none;
+    overflow-wrap:normal;word-break:normal;
+  }
+  .hero-lead em{
+    font-family:'Playfair Display',Georgia,serif;
+    font-style:italic;font-weight:600;
+    color:#E9E4E0;
+  }
+
+  /* ── Правая колонка ── */
+  .hero-visual{
+    position:relative;min-width:0;
+    min-height:640px;
+    isolation:isolate;
+  }
+  .film-frame{
+    position:absolute;top:50%;left:50%;
+    width:min(100%,420px);
+    transform:translate(-50%,-50%) rotate(5deg);
+  }
+  .film-strip{position:relative;padding:0 30px;background:#943A1F}
+  .film-perf{position:absolute;top:0;bottom:0;width:30px;height:100%}
+  .film-perf--l{left:0}
+  .film-perf--r{right:0}
+
+  .film-cell{aspect-ratio:4/5;border-radius:6px;background:#1B191A;box-shadow:inset 0 0 0 1px rgba(233,228,224,0.14)}
+  .film-gap{height:36px;display:flex;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#E9E4E0}
+
+  /* ══════ ФОТО: без серых линий ══════ */
+  .film-main{
+    position:relative;
+    aspect-ratio:4/5;
+    background:#F2EFEB; 
+    border-radius:6px;
+    overflow:visible;
+  }
+  .film-main-clip{
+    position:absolute;
+    inset:0;
+    border-radius:6px;
+    overflow:hidden;
+    clip-path:inset(-160px 0 0 0);
+  }
+  .film-main-clip img{
+    position:absolute;
+    left:50%;
+    bottom:-2%;
+    width:115%; 
+    max-width:none;
+    height:auto;
+    transform:translateX(-50%);
+    filter:drop-shadow(0 18px 22px rgba(27,25,26,0.28));
+    user-select:none;-webkit-user-drag:none;
+  }
+
+  /* ══════ Бегущая лента: высота уменьшена на 20% ══════ */
+  .ticker{
+    position:relative;
+    z-index:2;
+    overflow:hidden;
+    background:#943A1F;
+    color:#E9E4E0;
+    display:flex;
+    flex-direction:column;
+    padding:12px 0; 
+    width: 100%;
+  }
+  .ticker-perf{
+    height:8px;
+    flex-shrink:0;
+    background-image:repeating-linear-gradient(90deg,#1B191A 0 14px,transparent 14px 32px);
+  }
+  .ticker-viewport{
+    overflow:hidden;
+    width:100%;
+    padding:0 20px; 
+    display:flex;
+    align-items:center;
+    /* ⬇︎ Высота уменьшена с 40px до 32px (-20%) */
+    height:32px; 
+  }
+  .ticker-track{
+    display:flex;
+    width:max-content;
+    animation:marquee 50s linear infinite;
+  }
+  .ticker-track>div{
+    display:flex;
+    flex-shrink:0;
+  }
+  .ticker-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-right:56px;
+    white-space:nowrap;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    line-height:1; 
+  }
+  .ticker-item b{
+    opacity:.8;
+    font-weight:500;
+  }
+
+  /* ── Адаптив ── */
+  @media (max-width:1100px){
+    .hero-layout{grid-template-columns:minmax(0,1fr) minmax(380px,.9fr)}
+    .hero-visual{min-height:600px}
+    .film-frame{width:min(100%,380px)}
+  }
+  @media (max-width:940px){
+    .hero-layout{grid-template-columns:minmax(0,1fr);gap:32px}
+    .hero-copy{padding:16px 0 0;max-width:100%}
+    .hero-visual{min-height:560px}
+    .film-frame{width:min(100%,340px)}
+    .disc{width:112px;height:112px;bottom:8%}
+  }
+  @media (max-width:520px){
+    .hero-title{font-size:clamp(30px,8vw,40px)}
+    .hero-lead{font-size:16px}
+    .nav-pill{gap:2px}
+    .nav-ico{height:40px;padding:0 10px}
+    .disc{width:96px;height:96px}
+    .hero-visual{min-height:500px}
+    .film-frame{width:min(100%,290px)}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+
+  <!-- шапка -->
+  <header class="hero-header">
+    <a href="#" class="brand" aria-label="sazonov — на главную">
+      sazonov
+      <span class="toast" role="tooltip">+вайб</span>
+    </a>
+
+    <nav class="nav-pill" aria-label="Основная навигация">
+      <a href="#cases" class="nav-ico" aria-label="Кейсы">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="11" width="16" height="9" rx="1.5"/>
+          <path d="M3.6 7.2 19.8 4l.7 3.4L4.3 10.6z"/>
+          <path d="M8 6.33 8.7 9.73M12.5 5.44l.7 3.4M17 4.55l.7 3.4"/>
+        </svg>
+        <span class="lbl" aria-hidden="true"><span>Кейсы</span></span>
+      </a>
+      <a href="#skills" class="nav-ico" aria-label="Навыки">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 19v-7M12 19V5M19 19v-9"/><path d="M3 21h18"/>
+        </svg>
+        <span class="lbl" aria-hidden="true"><span>Навыки</span></span>
+      </a>
+      <a href="#about" class="nav-ico" aria-label="Обо мне">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/>
+        </svg>
+        <span class="lbl" aria-hidden="true"><span>Обо мне</span></span>
+      </a>
+      <a href="#contact" class="nav-ico" aria-label="Контакты">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.8 7.2 8.2 6.2 8.2-6.2"/>
+        </svg>
+        <span class="lbl" aria-hidden="true"><span>Контакты</span></span>
+      </a>
+      <a href="#contact" class="hire" style="display:inline-flex;align-items:center;height:44px;margin-left:6px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:700">
+        <span class="roll"><span class="roll-in">
+          <span>Связаться со мной</span>
+          <span aria-hidden="true">Связаться со мной</span>
+        </span></span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- главный экран -->
+  <main class="hero-main">
+    <div class="hero-layout">
+
+      <!-- текст -->
+      <div class="hero-copy">
+        <div class="chip reveal" style="--d:.2s">
+          <i aria-hidden="true"></i>
+          Бизнес-аналитик
+        </div>
+
+        <h1 class="hero-title">
+          <span class="w"><span class="wi" style="--d:.3s">От</span></span>
+          <span class="w"><span class="wi" style="--d:.38s">идеи</span></span>
+          <span class="w"><span class="wi" style="--d:.46s">до</span></span>
+          <span class="w"><span class="wi" style="--d:.54s">запуска</span></span>
+          <span class="w"><span class="wi" style="--d:.62s">—</span></span>
+          <span class="w"><span class="wi em-one" style="--d:.70s">один Я</span></span>
+        </h1>
+
+        <p class="hero-lead reveal" style="--d:1.1s">
+          Избавляю проекты от факапов на старте и дорогих переделок: помогаю разработчикам разобраться в сценариях, стейкхолдерам увидеть будущий результат, а самому проекту — пройти путь от <em>«Колобка»</em> до <em>«Интерстеллара»</em>.
+        </p>
+
+        <a href="#cases" class="btn-primary reveal" style="--d:1.6s;display:inline-flex;align-items:center;min-height:58px;padding:0 34px;border-radius:999px;font-size:17px;font-weight:700">
+          <span class="roll"><span class="roll-in">
+            <span>Смотреть кейсы</span>
+            <span aria-hidden="true">Смотреть кейсы</span>
+          </span></span>
+        </a>
+      </div>
+
+      <!-- фото -->
+      <div class="hero-visual">
+        <div class="film-frame">
+          <div class="film-strip strip-drift">
+
+            <svg class="film-perf film-perf--l" aria-hidden="true">
+              <defs>
+                <pattern id="sprocket" width="30" height="36" patternUnits="userSpaceOnUse">
+                  <rect x="9" y="8" width="12" height="20" rx="3" fill="#1B191A"/>
+                </pattern>
+              </defs>
+              <rect width="30" height="100%" fill="url(#sprocket)"/>
+            </svg>
+            <svg class="film-perf film-perf--r" aria-hidden="true">
+              <rect width="30" height="100%" fill="url(#sprocket)"/>
+            </svg>
+
+            <div class="film-cell" aria-hidden="true"></div>
+            <div class="film-gap" aria-hidden="true"></div>
+
+            <div class="film-main">
+              <div class="film-main-clip">
+                <!-- ⬇︎ photo.png рядом с html ИЛИ data:image/png;base64,... -->
+                <img
+                  src="img/photo.png"
+                  alt="Андрей Сазонов — бизнес-аналитик"
+                  width="848" height="1200"
+                  loading="eager" decoding="async"
+                >
+              </div>
+            </div>
+            <div class="film-gap" aria-hidden="true">12</div>
+
+            <div class="film-cell" aria-hidden="true"></div>
+            <div class="film-gap" aria-hidden="true">13</div>
+
+          </div>
+        </div>
+
+        <!-- диск -->
+        <a href="#cases" class="disc" id="discBtn" aria-label="Смотреть кейсы">
+          <svg width="100%" height="100%" viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <path id="badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/>
+            </defs>
+            <circle cx="60" cy="60" r="58" fill="#1B191A" stroke="#E9E4E0" stroke-opacity="0.4"/>
+            <g class="spin">
+              <text font-family="IBM Plex Mono, monospace" font-size="10" fill="#E9E4E0">
+                <textPath href="#badge-circle" textLength="268" lengthAdjust="spacing">SAZONOV · BUSINESS ANALYST · ANDREY ·</textPath>
+              </text>
+            </g>
+            <circle cx="60" cy="60" r="22" fill="#943A1F"/>
+            <path d="M54 50v20l17-10z" fill="#E9E4E0"/>
+          </svg>
+
+          <span class="notes" aria-hidden="true">
+            <span>♪</span>
+            <span>♫</span>
+            <span>♩</span>
+            <span>♬</span>
+            <span>♪</span>
+            <span>♫</span>
+          </span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Бегущая лента -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-perf"></div>
+    <div class="ticker-viewport">
+      <div class="ticker-track">
+        <div>
+          <span class="ticker-item"><b>01</b> Требования</span>
+          <span class="ticker-item"><b>02</b> Процессы</span>
+          <span class="ticker-item"><b>03</b> Данные</span>
+          <span class="ticker-item"><b>04</b> Дашборды</span>
+          <span class="ticker-item"><b>05</b> Решения</span>
+          <span class="ticker-item"><b>01</b> Требования</span>
+          <span class="ticker-item"><b>02</b> Процессы</span>
+          <span class="ticker-item"><b>03</b> Данные</span>
+          <span class="ticker-item"><b>04</b> Дашборды</span>
+          <span class="ticker-item"><b>05</b> Решения</span>
+        </div>
+        <div>
+          <span class="ticker-item"><b>01</b> Требования</span>
+          <span class="ticker-item"><b>02</b> Процессы</span>
+          <span class="ticker-item"><b>03</b> Данные</span>
+          <span class="ticker-item"><b>04</b> Дашборды</span>
+          <span class="ticker-item"><b>05</b> Решения</span>
+          <span class="ticker-item"><b>01</b> Требования</span>
+          <span class="ticker-item"><b>02</b> Процессы</span>
+          <span class="ticker-item"><b>03</b> Данные</span>
+          <span class="ticker-item"><b>04</b> Дашборды</span>
+          <span class="ticker-item"><b>05</b> Решения</span>
+        </div>
+      </div>
+    </div>
+    <div class="ticker-perf"></div>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    const disc = document.getElementById('discBtn');
+    if (!disc) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    disc.addEventListener('click', function(e){
+      e.preventDefault();
+      if (disc.classList.contains('is-playing')) return;
+      disc.classList.add('is-playing');
+      setTimeout(function(){ disc.classList.remove('is-playing'); }, reduce ? 1300 : 1700);
+    });
+  })();
+</script>
+
+</body>
+</html>
