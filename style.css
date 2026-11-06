@@ -1,0 +1,57 @@
+h1 {
+    color: red;
+}
+
+.nav-list > li:nth-child(1) > a {
+    color: green;
+}
+
+.nav-list .special-link {
+    color: blue;
+}
+
+.nav-list > li:nth-child(3) > a {
+    color: gold;
+}
+
+.content #first-post {
+    color: orange;
+}
+
+.content > .post:nth-child(2) {
+    color: purple;
+}
+
+.sidebar > .widget:nth-child(1) > h3 {
+    color: pink;
+}
+
+.sidebar > .important-widget {
+    color: #780606;
+}
+
+.highligted {
+    color: black;
+}
+
+.widget > .color-list > li:nth-child(1) {
+    color: grey;
+}
+
+.widget > .color-list > li:nth-child(2) {
+    color: brown;
+}
+
+.form input[type="text"]:focus {
+    outline: none;
+    border-color: #0066cc; 
+}
+
+.form input[type="text"] {
+    background-color: #222;
+    color: white;
+}
+
+
+
+
